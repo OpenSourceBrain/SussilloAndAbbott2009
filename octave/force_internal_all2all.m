@@ -18,7 +18,7 @@ fontweight = 'bold';
 
 N = 1000;
 p = 1.0;
-g = 1.5;				% g greater than 1 leads to chaotic networks.
+g = 1.5;                % g greater than 1 leads to chaotic networks.
 alpha = 1.0e-0;
 nsecs = 1440;
 dt = 0.1;
@@ -44,7 +44,7 @@ simtime = 0:dt:nsecs-dt;
 simtime_len = length(simtime);
 simtime2 = 1*nsecs:dt:2*nsecs-dt;
 
-amp = 0.7;				% amp lower because wf is implied as all ones, which is half the strength of wf.
+amp = 0.7;              % amp lower because wf is implied as all ones, which is half the strength of wf.
 freq = 1/60;
 ft = (amp/1.0)*sin(1.0*pi*freq*simtime) + ...
      (amp/2.0)*sin(2.0*pi*freq*simtime) + ...
@@ -59,7 +59,7 @@ ft2 = (amp/1.0)*sin(1.0*pi*freq*simtime2) + ...
 ft2 = ft2/1.5;
 
 
-wo_len = zeros(1,simtime_len);    
+wo_len = zeros(1,simtime_len);
 M1_len = zeros(1,simtime_len);
 rPr_len = zeros(1,simtime_len);
 zt = zeros(1,simtime_len);
@@ -69,73 +69,73 @@ x0 = 0.5*randn(N,1);
 z0 = 0.5*randn(1,1);
 
 
-x = x0; 
+x = x0;
 r = tanh(x);
 xp = x0;
-z = z0; 
+z = z0;
 
 figure;
 ti = 0;
 P = (1.0/alpha)*eye(nRec2Out);
 for t = simtime
-    ti = ti+1;	
-    
+    ti = ti+1;
+
     if mod(ti, nsecs/2) == 0
-	disp(['time: ' num2str(t,3) '.']);
-	subplot (2,1,1);
-	plot(simtime, ft, 'linewidth', linewidth, 'color', 'green');
-	hold on;
-	plot(simtime, zt, 'linewidth', linewidth, 'color', 'red');
-	title('training', 'fontsize', fontsize, 'fontweight', fontweight);
-	legend('f', 'z');	
-	xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
-	ylabel('f and z', 'fontsize', fontsize, 'fontweight', fontweight);
-	hold off;
-	
-	subplot (2,1,2);
-	plot(simtime, wo_len, 'linewidth', linewidth);
-	xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
-	ylabel('|w|', 'fontsize', fontsize, 'fontweight', fontweight);
-	legend('|w|');
-	pause(0.5);	
+    disp(['time: ' num2str(t,3) '.']);
+    subplot (2,1,1);
+    plot(simtime, ft, 'linewidth', linewidth, 'color', 'green');
+    hold on;
+    plot(simtime, zt, 'linewidth', linewidth, 'color', 'red');
+    title('training', 'fontsize', fontsize, 'fontweight', fontweight);
+    legend('f', 'z');
+    xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
+    ylabel('f and z', 'fontsize', fontsize, 'fontweight', fontweight);
+    hold off;
+
+    subplot (2,1,2);
+    plot(simtime, wo_len, 'linewidth', linewidth);
+    xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
+    ylabel('|w|', 'fontsize', fontsize, 'fontweight', fontweight);
+    legend('|w|');
+    pause(0.5);
     end
-    
+
     % sim, so x(t) and r(t) are created.
     x = (1.0-dt)*x + M*(r*dt);
     r = tanh(x);
     z = wo'*r;
-    
+
     if mod(ti, learn_every) == 0
-	% update inverse correlation matrix
-	k = P*r;
-	rPr = r'*k;
-	c = 1.0/(1.0 + rPr);
-	P = P - k*(k'*c);
-	
-	% update the error for the linear readout
-	e = z-ft(ti);
-	
-	% update the output weights
-	dw = -e*k*c;
-	wo = wo + dw;
-	
-	% update the internal weight matrix using the output's error
-	M = M + repmat(dw', N, 1);
+    % update inverse correlation matrix
+    k = P*r;
+    rPr = r'*k;
+    c = 1.0/(1.0 + rPr);
+    P = P - k*(k'*c);
+
+    % update the error for the linear readout
+    e = z-ft(ti);
+
+    % update the output weights
+    dw = -e*k*c;
+    wo = wo + dw;
+
+    % update the internal weight matrix using the output's error
+    M = M + repmat(dw', N, 1);
     end
 
     % Store the output of the system.
     zt(ti) = z;
-    wo_len(ti) = sqrt(wo'*wo);	
+    wo_len(ti) = sqrt(wo'*wo);
 end
 error_avg = sum(abs(zt-ft))/simtime_len;
 disp(['Training MAE: ' num2str(error_avg,3)]);
-disp(['Now testing... please wait.']);    
+disp(['Now testing... please wait.']);
 
-% Now test. 
+% Now test.
 ti = 0;
-for t = simtime				% don't want to subtract time in indices 
-    ti = ti+1;    
-    
+for t = simtime             % don't want to subtract time in indices
+    ti = ti+1;
+
     % sim, so x(t) and r(t) are created.
     x = (1.0-dt)*x + M*(r*dt);
     r = tanh(x);
@@ -161,7 +161,7 @@ legend('f', 'z');
 
 subplot (2,1,2);
 hold on;
-plot(simtime2, ft2, 'linewidth', linewidth, 'color', 'green'); 
+plot(simtime2, ft2, 'linewidth', linewidth, 'color', 'green');
 axis tight;
 plot(simtime2, zpt, 'linewidth', linewidth, 'color', 'red');
 axis tight;
@@ -169,5 +169,5 @@ title('simulation', 'fontsize', fontsize, 'fontweight', fontweight);
 xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
 ylabel('f and z', 'fontsize', fontsize, 'fontweight', fontweight);
 legend('f', 'z');
-	
+
 
