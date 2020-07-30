@@ -74,23 +74,23 @@ for t = simtime
     ti = ti+1;
 
     if mod(ti, nsecs/2) == 0
-    disp(['time: ' num2str(t,3) '.']);
-    subplot (2,1,1);
-    plot(simtime, ft, 'linewidth', linewidth, 'color', 'green');
-    hold on;
-    plot(simtime, zt, 'linewidth', linewidth, 'color', 'red');
-    title('training', 'fontsize', fontsize, 'fontweight', fontweight);
-    legend('f', 'z');
-    xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
-    ylabel('f and z', 'fontsize', fontsize, 'fontweight', fontweight);
-    hold off;
+        disp(['time: ' num2str(t,3) '.']);
+        subplot (2,1,1);
+        plot(simtime, ft, 'linewidth', linewidth, 'color', 'green');
+        hold on;
+        plot(simtime, zt, 'linewidth', linewidth, 'color', 'red');
+        title('training', 'fontsize', fontsize, 'fontweight', fontweight);
+        legend('f', 'z');
+        xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
+        ylabel('f and z', 'fontsize', fontsize, 'fontweight', fontweight);
+        hold off;
 
-    subplot (2,1,2);
-    plot(simtime, wo_len, 'linewidth', linewidth);
-    xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
-    ylabel('|w|', 'fontsize', fontsize, 'fontweight', fontweight);
-    legend('|w|');
-    pause(0.5);
+        subplot (2,1,2);
+        plot(simtime, wo_len, 'linewidth', linewidth);
+        xlabel('time', 'fontsize', fontsize, 'fontweight', fontweight);
+        ylabel('|w|', 'fontsize', fontsize, 'fontweight', fontweight);
+        legend('|w|');
+        pause(0.5);
     end
 
     % sim, so x(t) and r(t) are created.
@@ -99,18 +99,18 @@ for t = simtime
     z = wo'*r;
 
     if mod(ti, learn_every) == 0
-    % update inverse correlation matrix
-    k = P*r;
-    rPr = r'*k;
-    c = 1.0/(1.0 + rPr);
-    P = P - k*(k'*c);
+        % update inverse correlation matrix
+        k = P*r;
+        rPr = r'*k;
+        c = 1.0/(1.0 + rPr);
+        P = P - k*(k'*c);
 
-    % update the error for the linear readout
-    e = z-ft(ti);
+        % update the error for the linear readout
+        e = z-ft(ti);
 
-    % update the output weights
-    dw = -e*k*c;
-    wo = wo + dw;
+        % update the output weights
+        dw = -e*k*c;
+        wo = wo + dw;
     end
 
     % Store the output of the system.
