@@ -13,6 +13,7 @@ import scipy.sparse
 import scipy.stats
 import numpy
 import math
+import progressbar
 
 
 class Sine4_1A():
@@ -102,11 +103,12 @@ class Sine4_1A():
         r = numpy.tanh(x)
         z = z0
 
+        # progress bar
+        widgets = [progressbar.Percentage(), progressbar.Bar(),
+                   progressbar.FormatLabel(" Time elapsed: %(elapsed)s")]
+        bar = progressbar.ProgressBar(widgets=widgets, max_value=100).start()
         ti = 0
         for t in self.simtime_training:
-            if ti % 100/self.dt == 0:
-                print("time: {} seconds".format(ti * self.dt))
-
             # neuronal activity in recurrent network
             x = (
                 (1.0-self.dt) * x +
@@ -131,7 +133,10 @@ class Sine4_1A():
 
             # increment time
             ti += 1
+            if ti % 10 == 0:
+                bar.update(ti/len(self.simtime_training) * 100)
 
+        bar.finish()
         error_avg = ((numpy.abs(self.zt - self.ft).sum())
                      / len(self.simtime_training))
         print("Training MAE: {}".format(error_avg))
