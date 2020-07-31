@@ -9,6 +9,7 @@ Author: Ankur Sinha <sanjay DOT ankur AT gmail DOT com>
 """
 
 
+import scipy.io
 import scipy.sparse
 import scipy.stats
 import numpy
@@ -44,15 +45,24 @@ class Sine4_1A():
         # feedback connection weights
         self.normal_rng = numpy.random.default_rng(seed=self.seed)
         self.wf = 2.0 * (
-            self.normal_rng.standard_normal(size=(self.N, 1))
+            self.normal_rng.uniform(size=(self.N, 1))
             - 0.5
         )
         # weights for the recurrent network
-        rvs = scipy.stats.norm().rvs
+        #  self.M = scipy.io.loadmat("M.mat")
+        #  self.M = self.M['b']
+        rvs = scipy.stats.norm(loc=0.0, scale=1.0).rvs
         self.M = scipy.sparse.random(
             self.N, self.N, density=self.p,
+            format='csr',
             data_rvs=rvs
         ) * self.g * self.scale
+        self.M = self.M.toarray()
+
+        print("M is of type {}".format(type(self.M)))
+
+        numpy.savetxt("M.csv", self.M, fmt='%.10f',
+                      delimiter=',', newline='\n')
 
         # For stimulus signals
         self.amp = 1.3
