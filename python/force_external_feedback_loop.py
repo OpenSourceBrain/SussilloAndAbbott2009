@@ -23,11 +23,15 @@ class Sine4_1A():
     4 sine waves using architecture of figure 1A
     """
 
-    def __init__(self):
-        """Initialise parameters"""
+    def __init__(self, network_scale=1):
+        """
+        Initialise parameters
+
+        network_scale: integer: scale of the network
+        """
         print("Initialising network parameters and constants")
         self.seed = 4242
-        self.N = 1000  # number of neurons in recurrent network
+        self.N = 1000 * network_scale  # number of neurons in recurrent network
         self.p = 0.1  # sparsity of connectivity
         self.g = 1.5  # g greater than 1 leads to chaotic networks.
         self.alpha = 1.0  # acts as learning rate; alpha << N
