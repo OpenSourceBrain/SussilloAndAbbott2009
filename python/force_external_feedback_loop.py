@@ -15,6 +15,7 @@ import scipy.stats
 import numpy
 import math
 import progressbar
+import time
 
 
 class Sine4_1A():
@@ -286,7 +287,7 @@ class Sine4_1A():
 
         error_avg = ((numpy.abs(self.z_testing - self.ft2).sum())
                      / len(self.simtime_testing))
-        print("Testing MAE: {}".format(error_avg))
+        print("\nTesting MAE: {}".format(error_avg))
 
         numpy.savetxt("ft-test.csv", self.ft2.transpose(), fmt='%.10f',
                       delimiter='\t', newline='\n')
@@ -295,6 +296,10 @@ class Sine4_1A():
 
 
 if __name__ == "__main__":
+    start = time.perf_counter()
     sim = Sine4_1A()
     sim.train()
     sim.test()
+    stop = time.perf_counter()
+
+    print(f"Took {stop - start} seconds to run")
