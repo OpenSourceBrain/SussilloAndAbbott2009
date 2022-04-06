@@ -1,4 +1,4 @@
 numpy
 scipy
 bokeh
-progressbar
+progressbar2<=4.0
