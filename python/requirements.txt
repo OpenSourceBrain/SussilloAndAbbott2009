@@ -1,0 +1,4 @@
+numpy
+scipy
+bokeh
+progressbar2<=4.0
