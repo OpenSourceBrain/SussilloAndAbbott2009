@@ -207,8 +207,7 @@ class Sine4_1A():
                                           self.P, self.ft[ti])
 
             self.z_training[0][ti] = self.z
-            self.wo_mag[0][ti] = numpy.sqrt(
-                numpy.dot(self.wo.transpose(), self.wo))
+            self.wo_mag[0][ti] = scipy.linalg.norm(self.wo)
 
             # increment time
             ti += 1
